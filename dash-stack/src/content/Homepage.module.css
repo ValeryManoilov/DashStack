@@ -1,0 +1,8 @@
+.gradient{
+    background: linear-gradient(180deg, rgb(255, 255, 255), rgb(0, 0, 0))
+}
+
+#areaGradient
+{
+    background: linear-gradient(180deg, rgb(67, 121, 239), rgb(255, 255, 255));
+}
