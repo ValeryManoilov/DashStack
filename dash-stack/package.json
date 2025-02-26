@@ -11,8 +11,11 @@
   },
   "dependencies": {
     "math": "^0.0.3",
+    "mobx": "^6.13.6",
+    "mobx-react": "^9.2.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "react-mobx": "^0.0.4",
     "react-router": "^7.1.5",
     "react-select": "^5.10.0",
     "recharts": "^2.15.1",

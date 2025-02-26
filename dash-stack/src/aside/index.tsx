@@ -1,5 +1,5 @@
 import { Link } from "react-router";
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 import style from "./index.module.css";
 
 import aside1 from "../assets/AsideImages/FirstArray/aside1.svg";
@@ -20,6 +20,8 @@ import aside14 from "../assets/AsideImages/SecondArray/aside8.svg";
 
 import aside15 from "../assets/AsideImages/ThirdArray/aside1.svg";
 import aside16 from "../assets/AsideImages/ThirdArray/aside2.svg";
+import { useContext, useState } from "react";
+import { AsideContext } from "../App";
 
 
 interface IAsideData{
@@ -119,20 +121,41 @@ const AsideSettingsArray: IAsideData[] =
     }
 ]
 
+const asideOpenAnim = keyframes`
+    from{
+        width: 0;
+    }
+    to{
+        width: 16.6%;
+    }
+`
+
+const asideCloseAnim = keyframes`
+    from{
+        width: 16.6%;
+    }
+    to{
+        width: 0;
+    }
+`
+
 export const AsideContainer = styled.aside`
-    width: 16.6%;
+    width: ${(props) => (props.isAside ? "16.6%" : "0")};
+    opacity: ${(props) => (props.isAside ? "1" : "0")};
     height: 100vh;
-    display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: start;
     border-right: 1px solid #E0E0E0;
+    /* position: fixed; */
+    transition: all 1s;
+    animation: ${(props) => (props.isAside ? asideOpenAnim : asideCloseAnim)} 1s;
 `
 
 export const AsideLink = styled(Link)`
     font-weight: 0.875em;
     font-weight: 600;
-    color: #202224;
+    color: ${(props) => (props.isActive ? "#FFFFFF" : "#000000")};
     transition: all 0.4s;
     background-color: white;
     text-decoration: none;
@@ -145,14 +168,10 @@ export const AsideLink = styled(Link)`
     flex-direction: row;
     align-items: start;
     gap: 8.3%;
+    background-color: ${(props) => (props.isActive ? "#4880FF" : "#FFFFFF")};
 
-    &:focus{
-        color: white;
-        background-color: #4880FF;
-    }
-
-    &:focus img{
-        filter: brightness(0) invert(1);
+    & img{
+        filter: ${(props) => (props.isActive ? "brightness(0) invert(1)" : "default")};
     }
 `
 
@@ -200,13 +219,22 @@ export const Hr = styled.div`
 `
 
 const Aside = () => {
+
+    const { isAside } = useContext(AsideContext)
+    const [isActive, setIsActive] = useState(1);
+
     return(
-        <AsideContainer>
+        <AsideContainer isAside={isAside}>
             <AsideTitle>DashStack</AsideTitle>
             <AsideFirstList>
                 {
-                    AsideArrayData.map((el) => (
-                        <AsideLink to={el.link}>
+                    AsideArrayData.map((el, idx) => (
+                        <AsideLink 
+                        to={el.link} 
+                        isActive={isActive === idx}
+                        id={idx}
+                        onClick={() => setIsActive(idx)}
+                        >
                             <img src={el.picture}/>
                             {el.title}
                         </AsideLink>

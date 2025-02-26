@@ -7,7 +7,8 @@ import RussianFlag from "../assets/HeaderImages/RussianFlag.jpg";
 import Avatar from "../assets/HeaderImages/Avatar.jpg";
 import More from "../assets/HeaderImages/More.svg";
 import Select from "react-select";
-import { useState } from "react";
+import { useContext, useState } from "react";
+import { AsideContext } from "../App";
 
 const LanguageOptions = [
     {
@@ -31,6 +32,7 @@ export const HeaderContainer  = styled.div`
     align-items: center;
     justify-content: space-between;
     padding: 1% 2.5%;
+    position: relative;
 `
 
 export const SearchContainer  = styled.div`
@@ -42,6 +44,13 @@ export const SearchContainer  = styled.div`
 `
 
 export const SearchImage = styled.img`
+    position: absolute;
+    top: auto;
+    left: 17px;
+    cursor: pointer;
+`
+
+export const HideAsideImage = styled.img`
     position: absolute;
     top: auto;
     left: 17px;
@@ -81,7 +90,10 @@ export const UserInfo  = styled.div`
     display: flex;
     flex-direction: row;
     align-items: center;
-    gap: 23px
+    gap: 23px;
+    position: relative;
+    cursor: pointer;
+    margin: 0 auto;
 `
 
 export const UserInfoText  = styled.div`
@@ -106,9 +118,24 @@ export const DropDownImg  = styled.img`
     cursor: pointer;
 `
 
-export const MoreMenu  = styled.img`
+export const ExitMenu  = styled.img`
+    cursor: pointer;
+    rotate: ${(props) => (props.exitMenu ? "180deg" : "0")};
+    `
+
+export const ExitButton  = styled.button`
+    display: ${(props) => (props.exitMenu ? "block" : "none")};
+    font-size: 0.875em;
+    background-color: #e94343;
+    border: none;
+    padding: 0.5em 2em;
+    position: absolute;
+    border-radius: 20px;
+    bottom: -100%;
+    right: 0;
     cursor: pointer;
 `
+
 
 export const LeftPart  = styled.div`
     display: flex;
@@ -152,8 +179,9 @@ export const CountNotifications  = styled.circle`
 const Header = () => {
     const [language, setLanguage] = useState("British");
     const [flag, setFlag] = useState(BritishFlag)
-
     const [notifications, setNotifications] = useState(0)
+    const { setAside } = useContext(AsideContext)
+    const [exitMenu, setExitMenu] = useState(false)
 
     function resetFlag(optionLanguage)
     {
@@ -163,10 +191,12 @@ const Header = () => {
             setFlag(optionLanguage.value == "English" ? BritishFlag : RussianFlag)
         }
     }
+
+
     return(
         <HeaderContainer>
             <LeftPart>
-                <img src={Menu}/>
+                <HideAsideImage src={Menu} onClick={() => setAside()}/>
                 <SearchContainer>
                     <SearchImage src={Search}/>
                     <SearchInput type="text" placeholder="Search"/>
@@ -183,14 +213,15 @@ const Header = () => {
                         options={LanguageOptions} onChange={resetFlag} defaultValue={LanguageOptions[1]}
                     />
                 </LanguageContainer>
-                <UserInfo>
-                    <img src={Avatar}/>
-                    <UserInfoText>
-                        <Username>Jonh Doe</Username>
-                        <Role>Admin</Role>
-                    </UserInfoText>
-                    <MoreMenu src={More} alt="" />
-                </UserInfo>
+                    <UserInfo onClick={() => setExitMenu(!exitMenu)}>
+                        <img src={Avatar}/>
+                        <UserInfoText>
+                            <Username>Jonh Doe</Username>
+                            <Role>Admin</Role>
+                        </UserInfoText>
+                        <ExitMenu src={More} alt="" exitMenu={exitMenu}/>
+                        <ExitButton exitMenu={exitMenu}>Exit</ExitButton>
+                    </UserInfo>
             </RightPart>
         </HeaderContainer>
     )
